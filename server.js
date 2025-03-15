@@ -10,7 +10,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: [ 'https://round-robin-coupon-distribution-git-main-sahilsky-ais-projects.vercel.app/',
+  origin: [ 'https://round-robin-coupon-distribution-git-main-sahilsky-ais-projects.vercel.app',
            'https://round-robin-coupon-distribution-nu.vercel.app'],
   credentials: true
 }));
