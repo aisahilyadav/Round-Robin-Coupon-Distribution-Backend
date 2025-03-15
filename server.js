@@ -9,16 +9,13 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-// CORS configuration - place this BEFORE other middleware
+// CORS configuration
 app.use(cors({
   origin: 'https://round-robin-coupon-distribution-red.vercel.app',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
-
-// Remove this app.options handler - it's conflicting with the cors middleware
-// app.options('*', (req, res) => { ... });
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
@@ -30,14 +27,17 @@ const adminRoutes = require('./routes/admin');
 const sessionCheck = require('./middleware/sessionCheck');
 const rateLimit = require('./middleware/rateLimit');
 
-// Apply session check middleware globally
-app.use(sessionCheck);
+// Apply session check, skipping OPTIONS
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    return next();
+  }
+  sessionCheck(req, res, next);
+});
 
 // Apply routes
 app.use('/api/coupons', rateLimit, couponRoutes);
 app.use('/api/admin', adminRoutes);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Export the app for Vercel
+module.exports = app;
