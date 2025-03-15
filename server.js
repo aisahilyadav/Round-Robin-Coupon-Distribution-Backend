@@ -10,7 +10,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:5174'],
+  origin: ['http://localhost:3000', 'http://localhost:5174' 'https://round-robin-coupon-distribution-nu.vercel.app/'],
   credentials: true
 }));
 
