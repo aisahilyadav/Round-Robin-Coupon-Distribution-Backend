@@ -11,10 +11,10 @@ app.use(cookieParser());
 
 // CORS configuration
 app.use(cors({
-  origin: ['https://round-robin-coupon-distribution-red.vercel.app', 'http://localhost:3000'],
+  origin: 'https://round-robin-coupon-distribution-red.vercel.app',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
 }));
 
 // Explicit OPTIONS handler for preflight requests
