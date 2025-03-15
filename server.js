@@ -3,25 +3,22 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
-
 const app = express();
 
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
+
+// CORS configuration - place this BEFORE other middleware
 app.use(cors({
-  origin: [ 'https://round-robin-coupon-distribution-red.vercel.app'],
-  credentials: true
+  origin: 'https://round-robin-coupon-distribution-red.vercel.app',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-app.options('*', (req, res) => {
-  res.header('Access-Control-Allow-Origin', req.headers.origin);
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.header('Cache-Control', 'no-store'); // Disable caching for preflight responses
-  res.sendStatus(200);
-});
-
+// Remove this app.options handler - it's conflicting with the cors middleware
+// app.options('*', (req, res) => { ... });
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
@@ -40,9 +37,7 @@ app.use(sessionCheck);
 app.use('/api/coupons', rateLimit, couponRoutes);
 app.use('/api/admin', adminRoutes);
 
-// Routes will be added here
-
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-}); 
+});
